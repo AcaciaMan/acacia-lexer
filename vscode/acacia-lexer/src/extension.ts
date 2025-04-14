@@ -22,8 +22,11 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(disposable);
 
-	// Register the WebviewViewProvider for the manage lexer view
-	manageLexer.activate(context);
+	// Register the ManageLexerViewProvider
+	const manageLexerViewProvider = new manageLexer.ManageLexerViewProvider(context.extensionUri); 
+	context.subscriptions.push( 
+		vscode.window.registerWebviewViewProvider(manageLexer.ManageLexerViewProvider.viewType, manageLexerViewProvider)
+	); 
 }
 
 // This method is called when your extension is deactivated

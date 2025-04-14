@@ -36,6 +36,17 @@
           "icon": "resources/lex_icon.svg"
         }
       ]
+    },
+    "configuration": {
+      "type": "object",
+      "title": "Acacia Lexer Configuration",
+      "properties": {
+        "acaciaLexer.selectedFolder": {
+          "type": "string",
+          "default": "",
+          "description": "Path to the folder containing the source code to be lexed."
+        }
+      }
     }
   },
   "scripts": {
