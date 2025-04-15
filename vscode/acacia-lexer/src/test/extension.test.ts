@@ -27,5 +27,14 @@ describe('Extension Test Suite', () => {
 	}
 	);
 
+	it('print codes of the characters', async () => {
+		console.log('0 ' + '0'.charCodeAt(0));
+		console.log('9 ' + '9'.charCodeAt(0));
+		console.log('a ' + 'a'.charCodeAt(0));
+		console.log('z ' + 'z'.charCodeAt(0));
+		console.log('A ' + 'A'.charCodeAt(0));
+		console.log('Z ' + 'Z'.charCodeAt(0));
+	});
+
 
 });
