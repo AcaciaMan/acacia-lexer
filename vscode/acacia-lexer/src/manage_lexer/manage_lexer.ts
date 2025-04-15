@@ -26,7 +26,7 @@ export class ManageLexerViewProvider implements vscode.WebviewViewProvider {
                     
         // Send the selected folder path to the webview if it exists
         
-        if (selectedFolder) {   
+        if (selectedFolder) {    
             webviewView.webview.postMessage({
                 command: 'updateSelectedFolder',
                 folderPath: selectedFolder,

@@ -2,14 +2,30 @@ import * as assert from 'assert';
 
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
-import * as vscode from 'vscode';
+//import * as vscode from 'vscode';
 // import * as myExtension from '../../extension';
 
-suite('Extension Test Suite', () => {
-	vscode.window.showInformationMessage('Start all tests.');
-
-	test('Sample test', () => {
-		assert.strictEqual(-1, [1, 2, 3].indexOf(5));
-		assert.strictEqual(-1, [1, 2, 3].indexOf(0));
+import { FileUtils } from '../utils/FileUtils';
+// create jest test
+describe('Extension Test Suite', () => {
+	it('should activate the extension', async () => {
+		console.log('Running extension test suite...');
 	});
+
+	it('read file and print to console 10 characters', async () => {
+		const filePath = 'C:/work/GitHub/wordpress-develop/src/wp-blog-header.php';
+		const fileUtils = new FileUtils(filePath);
+		fileUtils.initializeChunkReader(1028);
+		for (let i = 0; i < 10; i++) {
+			
+		let code = await fileUtils.decodeUtf8();
+		// print the character of utf-8 code
+		let char = code !== undefined ? String.fromCharCode(code) : '';
+		console.log(char);
+		console.log(code);
+		}
+	}
+	);
+
+
 });

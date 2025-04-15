@@ -64,10 +64,19 @@ export class FileUtils {
         this._isReading = false;
     }
 
+
+
     // get next character from the file
-    public getNextCharacter(): number | undefined {
-        if (this._chunkQueue.length === 0) {
-            return undefined; // No more characters to read
+    public async getNextCharacter(): Promise<number | undefined>  {
+
+        while (this._isReading && this._currentChunkIndex >= this._chunkQueue.length) {
+            // wait 100 ms
+            await wait(100); // Wait for chunks to be read
+        }
+                
+
+        if (this._currentChunkIndex >= this._chunkQueue.length) {
+            return undefined; // No more chunks to read
         }
 
         const chunk = this._chunkQueue[this._currentChunkIndex];
@@ -82,8 +91,8 @@ export class FileUtils {
         return charCode; // Return the character code
     }
 
-    public decodeUtf8(): number | undefined {
-        const bytes0 = this.getNextCharacter();
+    public async decodeUtf8(): Promise<number | undefined> {
+        const bytes0 = await this.getNextCharacter();
         if (bytes0 === undefined) {
             return undefined; // No more bytes to read
         }
@@ -94,24 +103,24 @@ export class FileUtils {
             charCode = bytes0;
         } else if ((bytes0 & 0xE0) === 0xC0) {
             // 2-byte sequence
-            const bytes1 = this.getNextCharacter();
+            const bytes1 = await this.getNextCharacter();
             if (bytes1 === undefined) {
                 return undefined; // No more bytes to read
             }
             charCode = ((bytes0 & 0x1F) << 6) | (bytes1 & 0x3F);
         } else if ((bytes0 & 0xF0) === 0xE0) {
             // 3-byte sequence
-            const bytes1 = this.getNextCharacter();
-            const bytes2 = this.getNextCharacter();
+            const bytes1 = await this.getNextCharacter();
+            const bytes2 = await this.getNextCharacter();
             if (bytes1 === undefined || bytes2 === undefined) {
                 return undefined; // No more bytes to read
             }
             charCode = ((bytes0 & 0x0F) << 12) | ((bytes1 & 0x3F) << 6) | (bytes2 & 0x3F);
         } else if ((bytes0 & 0xF8) === 0xF0) {
             // 4-byte sequence
-            const bytes1 = this.getNextCharacter();
-            const bytes2 = this.getNextCharacter();
-            const bytes3 = this.getNextCharacter();
+            const bytes1 = await this.getNextCharacter();
+            const bytes2 = await this.getNextCharacter();
+            const bytes3 = await this.getNextCharacter();
             if (bytes1 === undefined || bytes2 === undefined || bytes3 === undefined) {
                 return undefined; // No more bytes to read
             }
@@ -119,6 +128,11 @@ export class FileUtils {
         }
     
         return charCode;
-    }
+    };
 
+}
+
+
+function wait(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
 }
