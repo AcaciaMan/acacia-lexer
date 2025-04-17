@@ -190,5 +190,96 @@ export class Tokenizer {
         this.fileUtils.closeReader();
 }
 
+public walkTokens(): void {
+    let i = 0;
+    let j = 0;
+    while (i < this.tokens.length) {
+        if (this.tokens[i] === TokensClass.Number) {
+            j = i+1;
+            while (this.tokens[j] === TokensClass.Number) {
+                this.token[i].push(this.token[j][0]);
+                j++;
+            }
+            i = j;
+            continue;
+        } else if (this.tokens[i] === TokensClass.Word) {
+            j = i+1;
+            while (this.tokens[j] === TokensClass.Word  && this.tokens[j+1] !== TokensClass.word) {
+                this.token[i].push(this.token[j][0]);
+                j++;
+            }
+            while (this.tokens[j] === TokensClass.word) {
+                this.token[i].push(this.token[j][0]);
+                j++;
+            }
+            i = j;
+            continue;
+        } else if (this.tokens[i] === TokensClass.word) {
+            j = i+1;
+            while (this.tokens[j] === TokensClass.word) {
+                this.token[i].push(this.token[j][0]);
+                j++;
+            }
+            i = j;
+            continue;
+        }
+        else if (this.tokens[i] === TokensClass.EoL) {
+            j = i+1;
+            while (this.tokens[j] === TokensClass.EoL) {
+                this.token[i].push(this.token[j][0]);
+                j++;
+            }
+            i = j;
+            continue;
+        }
+        else if (this.tokens[i] === TokensClass.Separator) {
+            j = i+1;
+            while (this.tokens[j] === TokensClass.Separator) {
+                this.token[i].push(this.token[j][0]);
+                j++;
+            }
+            i = j;
+            continue;
+        }
+        else if (this.tokens[i] === TokensClass.Underscore) {
+            j = i+1;
+            while (this.tokens[j] === TokensClass.Underscore) {
+                this.token[i].push(this.token[j][0]);
+                j++;
+            }
+            i = j;
+            continue;
+        }
+        else if (this.tokens[i] === TokensClass.Slash && this.tokens[i+1] === TokensClass.Slash) {
+            this.tokens[i] = TokensClass.CommentSingle;
+            this.token[i].push(this.token[i+1][0]);
+            i = i+2;
+            continue;
+        }
+        else if (this.tokens[i] === TokensClass.Slash && this.tokens[i+1] === TokensClass.Asterisk) {
+            this.tokens[i] = TokensClass.CommentMultiStart;
+            this.token[i].push(this.token[i+1][0]);
+            i = i+2;
+            continue;
+        } else if (this.tokens[i] === TokensClass.Asterisk && this.tokens[i+1] === TokensClass.Slash) {
+            this.tokens[i] = TokensClass.CommentMultiEnd;
+            this.token[i].push(this.token[i+1][0]);
+            i = i+2;
+            continue;
+        }
+        else if (this.tokens[i] === TokensClass.OtherCharacter) {
+            j = i+1;
+            while (this.tokens[j] === TokensClass.OtherCharacter) {
+                this.token[i].push(this.token[j][0]);
+                j++;
+            }
+            i = j;
+            continue;
+        }
+
+        i++;
+    }
+}
+
 
 }
