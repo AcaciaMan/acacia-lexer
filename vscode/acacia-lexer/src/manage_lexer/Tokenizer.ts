@@ -130,6 +130,7 @@ export class Tokenizer {
 
   public token: {[key: number]: number[]} = {};
   public tokens: number[] = [];
+  public currentTokenIndex: number = 0;
 
   public fileUtils: FileUtils;
   public constructor(fileUtils: FileUtils) {
@@ -193,6 +194,7 @@ export class Tokenizer {
 public walkTokens(): void {
     let i = 0;
     let j = 0;
+    try {
     while (i < this.tokens.length) {
         if (this.tokens[i] === TokensClass.Number) {
             j = i+1;
@@ -279,7 +281,20 @@ public walkTokens(): void {
 
         i++;
     }
+
+} catch (e) {
+    console.log(e);
+}
 }
 
+public getNextToken(): number[] {
+    if (this.currentTokenIndex >= this.tokens.length) {
+        return []; // No more tokens to read
+    }
+    const token = this.token[this.currentTokenIndex];
+    this.currentTokenIndex += token.length; // Move to the next token
+        
+    return token;
 
+}
 }
