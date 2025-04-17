@@ -35,6 +35,12 @@ export enum SpecialCharacters {
     BracketRight = 93,
     BraceLeft = 123,
     BraceRight = 125,
+    Semicolon = 59,
+    Quote = 39,
+    QuoteDouble = 34,
+    Comma = 44,
+    Period = 46,
+    Slash = 47
 }
 export enum OtherCharacters {
     Space = 32,
@@ -99,7 +105,7 @@ export enum OtherCharacters9 {
     Tilde = 126,
     GraveAccent = 96,
 }
-export enum Tokens {
+export enum TokensClass {
     Number,
     Word,
     word,
@@ -112,17 +118,13 @@ export enum Tokens {
     Hyphen,
     LeftCurlyBrace,
     RightCurlyBrace,
+    Asterisk,
+    Slash,
+    LeftParenthesis,
+    RightParenthesis,
     OtherCharacter
 }
-enum States {
-    Start,
-    InWord,
-    InNumber,
-    Inword,
-    InSlash,
-    InAsterisk,
-    InUnderscore
-}
+
 
 export class Tokenizer {
 
@@ -137,10 +139,51 @@ export class Tokenizer {
 
     public async tokenize(): Promise<void> {
         this.fileUtils.initializeChunkReader(1028);
-        let code: number | undefined = 0;
-        let state: States = States.Start;
-        let token: number[] = [];
+        let code: number | undefined = 0; 
+        this.tokens = [];
+        this.token = {};
         while ((code = await this.fileUtils.decodeUtf8()) !== undefined) {
+            this.token[this.tokens.length] = [code];
+            if (code >= Digits.Z && code <= Digits.N) {
+                this.tokens.push(TokensClass.Number);
+            } else if (code >= UpperCase.A && code <= UpperCase.Z) {
+                this.tokens.push(TokensClass.Word);
+            }
+            else if (code >= LowerCase.a && code <= LowerCase.z) {
+                this.tokens.push(TokensClass.word);
+            }
+            else if (code === OtherCharacters.NewLine || code === OtherCharacters.CarriageReturn) {
+                this.tokens.push(TokensClass.EoL);
+            }
+            else if (code === OtherCharacters.Space || code === OtherCharacters.Tab) {
+                this.tokens.push(TokensClass.Separator);
+            }
+            else if (code === SpecialCharacters.Underscore) {
+                this.tokens.push(TokensClass.Underscore);
+            }
+            else if (code === SpecialCharacters.Hyphen) {
+                this.tokens.push(TokensClass.Hyphen);
+            }
+            else if (code === OtherCharacters6.LeftCurlyBrace) {
+                this.tokens.push(TokensClass.LeftCurlyBrace);
+            }
+            else if (code === OtherCharacters6.RightCurlyBrace) {
+                this.tokens.push(TokensClass.RightCurlyBrace);
+            }
+            else if (code === SpecialCharacters.Asterisk) {
+                this.tokens.push(TokensClass.Asterisk);
+            }
+            else if (code === SpecialCharacters.Slash) {
+                this.tokens.push(TokensClass.Slash);
+            }
+            else if (code === OtherCharacters6.LeftParenthesis) {
+                this.tokens.push(TokensClass.LeftParenthesis);
+            }
+            else if (code === OtherCharacters6.RightParenthesis) {
+                this.tokens.push(TokensClass.RightParenthesis);
+            } else {
+                this.tokens.push(TokensClass.OtherCharacter);
+            }
 
 
         }
