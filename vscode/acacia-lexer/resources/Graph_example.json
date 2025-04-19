@@ -1,4 +1,4 @@
-{lexer:{name:workpad,
-  files:[src:{type:dir,files:[]
+{"lexer":{"name":"workpad",
+  "files":["src":{"type":"dir","files":[]
     }}
     }
